@@ -10,11 +10,7 @@ class Mat44 {
         this.array = new Float32Array(array);
     }
 
-    static identity() {
-        return new Mat44([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1])
-    }
-
-    mult(other) {
+    transform(other) {
         const A = new Float32Array(this.array);
         const B = other.array;
 
@@ -35,9 +31,68 @@ class Mat44 {
         this.array[14] = A[12]*B[2] + A[13]*B[6] + A[14]*B[10] + A[15]*B[14]
         this.array[15] = A[12]*B[3] + A[13]*B[7] + A[14]*B[11] + A[15]*B[15]
     }
+    
+    scale(x, y, z) {
+        this.transform(
+            new Mat44([
+                x, 0, 0, 0,
+                0, y, 0, 0,
+                0, 0, z, 0,
+                0, 0, 0, 1,
+            ])
+        );
+
+        return this;
+    }
+    
+    translate(x, y, z) {
+        this.transform(
+            new Mat44([
+                1, 0, 0, x,
+                0, 1, 0, y,
+                0, 0, 1, z,
+                0, 0, 0, 1
+            ])
+        );
+        
+        return this;
+    }
+    
+    rotate(axis, angle) {
+        const c = Math.cos(angle);
+        const s = Math.sin(angle);
+        
+        this.transform(
+            new Mat44([
+                axis[0]*axis[0]*(1-c)+c, axis[0]*axis[1]*(1-c)-axis[2]*s, axis[0]*axis[2]*(1-c)+axis[1]*s, 0,
+                axis[0]*axis[1]*(1-c)+axis[2]*s, axis[1]*axis[1]*(1-c)+c, axis[1]*axis[2]*(1-c)-axis[0]*s, 0,
+                axis[0]*axis[2]*(1-c)+axis[1]*s, axis[1]*axis[2]*(1-c)+axis[0]*s, axis[2]*axis[2]*(1-c)+c, 0,
+                0, 0, 0, 1
+            ])
+        );
+        
+        return this;
+    }
+
+    project(viewportDistance, screenWidth, screenHeight, viewportWidth, viewportHeight) {
+        this.transform(
+            new Mat44([
+                (viewportDistance*screenWidth)/viewportWidth, 0, 0, 0,
+                0, (viewportDistance*screenHeight)/viewportHeight, 0, 0,
+                0, 0, 1, 0,
+                0, 0, 0, 0
+            ])
+        );
+        
+        return this;
+    }
 
     copy() {
         return new Mat44(this.array);
+    }
+
+    static identity() {
+        return new Mat44([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1])
     }
 }
 
@@ -57,3 +112,5 @@ class Vec4 {
         this.array[3] = M[12]*V[0] + M[13]*V[1] + M[14]*V[2] + M[15]*V[3]
     }
 }
+
+export { Mat44, Vec4 }
