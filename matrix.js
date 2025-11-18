@@ -11,25 +11,28 @@ class Mat44 {
     }
 
     transform(other) {
-        const A = new Float32Array(this.array);
+        const A = this.array;
         const B = other.array;
+        const C = new Float32Array(16);
 
-        this.array[0] = A[0]*B[0] + A[1]*B[4] + A[2]*B[8] + A[3]*B[12]
-        this.array[1] = A[0]*B[1] + A[1]*B[5] + A[2]*B[9] + A[3]*B[13]
-        this.array[2] = A[0]*B[2] + A[1]*B[6] + A[2]*B[10] + A[3]*B[14]
-        this.array[3] = A[0]*B[3] + A[1]*B[7] + A[2]*B[11] + A[3]*B[15]
-        this.array[4] = A[4]*B[0] + A[5]*B[4] + A[6]*B[8] + A[7]*B[12]
-        this.array[5] = A[4]*B[1] + A[5]*B[5] + A[6]*B[9] + A[7]*B[13]
-        this.array[6] = A[4]*B[2] + A[5]*B[6] + A[6]*B[10] + A[7]*B[14]
-        this.array[7] = A[4]*B[3] + A[5]*B[7] + A[6]*B[11] + A[7]*B[15]
-        this.array[8] = A[8]*B[0] + A[9]*B[4] + A[10]*B[8] + A[11]*B[12]
-        this.array[9] = A[8]*B[1] + A[9]*B[5] + A[10]*B[9] + A[11]*B[13]
-        this.array[10] = A[8]*B[2] + A[9]*B[6] + A[10]*B[10] + A[11]*B[14]
-        this.array[11] = A[8]*B[3] + A[9]*B[7] + A[10]*B[11] + A[11]*B[15]
-        this.array[12] = A[12]*B[0] + A[13]*B[4] + A[14]*B[8] + A[15]*B[12]
-        this.array[13] = A[12]*B[1] + A[13]*B[5] + A[14]*B[9] + A[15]*B[13]
-        this.array[14] = A[12]*B[2] + A[13]*B[6] + A[14]*B[10] + A[15]*B[14]
-        this.array[15] = A[12]*B[3] + A[13]*B[7] + A[14]*B[11] + A[15]*B[15]
+        C[0] = A[0]*B[0] + A[1]*B[4] + A[2]*B[8] + A[3]*B[12]
+        C[1] = A[0]*B[1] + A[1]*B[5] + A[2]*B[9] + A[3]*B[13]
+        C[2] = A[0]*B[2] + A[1]*B[6] + A[2]*B[10] + A[3]*B[14]
+        C[3] = A[0]*B[3] + A[1]*B[7] + A[2]*B[11] + A[3]*B[15]
+        C[4] = A[4]*B[0] + A[5]*B[4] + A[6]*B[8] + A[7]*B[12]
+        C[5] = A[4]*B[1] + A[5]*B[5] + A[6]*B[9] + A[7]*B[13]
+        C[6] = A[4]*B[2] + A[5]*B[6] + A[6]*B[10] + A[7]*B[14]
+        C[7] = A[4]*B[3] + A[5]*B[7] + A[6]*B[11] + A[7]*B[15]
+        C[8] = A[8]*B[0] + A[9]*B[4] + A[10]*B[8] + A[11]*B[12]
+        C[9] = A[8]*B[1] + A[9]*B[5] + A[10]*B[9] + A[11]*B[13]
+        C[10] = A[8]*B[2] + A[9]*B[6] + A[10]*B[10] + A[11]*B[14]
+        C[11] = A[8]*B[3] + A[9]*B[7] + A[10]*B[11] + A[11]*B[15]
+        C[12] = A[12]*B[0] + A[13]*B[4] + A[14]*B[8] + A[15]*B[12]
+        C[13] = A[12]*B[1] + A[13]*B[5] + A[14]*B[9] + A[15]*B[13]
+        C[14] = A[12]*B[2] + A[13]*B[6] + A[14]*B[10] + A[15]*B[14]
+        C[15] = A[12]*B[3] + A[13]*B[7] + A[14]*B[11] + A[15]*B[15]
+
+        this.array = C;
     }
     
     scale(x, y, z) {
@@ -48,10 +51,10 @@ class Mat44 {
     translate(x, y, z) {
         this.transform(
             new Mat44([
-                1, 0, 0, x,
-                0, 1, 0, y,
-                0, 0, 1, z,
-                0, 0, 0, 1
+                1, 0, 0, 0,
+                0, 1, 0, 0,
+                0, 0, 1, 0,
+                x, y, z, 1
             ])
         );
         
@@ -74,13 +77,13 @@ class Mat44 {
         return this;
     }
 
-    project(viewportDistance, screenWidth, screenHeight, viewportWidth, viewportHeight) {
+    project(viewportDistance, viewportWidth, viewportHeight, screenWidth, screenHeight) {
         this.transform(
             new Mat44([
                 (viewportDistance*screenWidth)/viewportWidth, 0, 0, 0,
                 0, (viewportDistance*screenHeight)/viewportHeight, 0, 0,
                 0, 0, 1, 0,
-                0, 0, 0, 0
+                0, 0, 0, 1
             ])
         );
         
@@ -106,10 +109,10 @@ class Vec4 {
         const V = new Float32Array(this.array);
         const M = matrix.array;
 
-        this.array[0] = M[0]*V[0] + M[1]*V[1] + M[2]*V[2] + M[3]*V[3]
-        this.array[1] = M[4]*V[0] + M[5]*V[1] + M[6]*V[2] + M[7]*V[3]
-        this.array[2] = M[8]*V[0] + M[9]*V[1] + M[10]*V[2] + M[11]*V[3]
-        this.array[3] = M[12]*V[0] + M[13]*V[1] + M[14]*V[2] + M[15]*V[3]
+        this.array[0] = M[0]*V[0] + M[4]*V[1] + M[8]*V[2] + M[12]*V[3]
+        this.array[1] = M[1]*V[0] + M[5]*V[1] + M[9]*V[2] + M[13]*V[3]
+        this.array[2] = M[2]*V[0] + M[6]*V[1] + M[10]*V[2] + M[14]*V[3]
+        this.array[3] = M[3]*V[0] + M[7]*V[1] + M[11]*V[2] + M[15]*V[3]
     }
 }
 

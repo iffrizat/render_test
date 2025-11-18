@@ -12,27 +12,35 @@ let deg = 0;
 setInterval(() => {
     ctx.clearRect(0, 0, 640, 480);
 
-    const transform = Mat44.identity();
-    transform
-        .scale(1, 1, 1)
+    /*
+    const model = Mat44.identity();
+
+    model.scale(1, 1, 1);
+    model.rotate([0, 1, 0], deg2rad(deg));
+    model.translate(100, 0, 0);
+    
+    const transform = Mat44.identity().project(100, 640, 480, 640, 480);
+    transform.transform(model);
+    */
+    const transform = Mat44.identity()
         .rotate([0, 1, 0], deg2rad(deg))
-        .translate(0, 0, 0)
-        .project(50, 640, 480, 1000, 1000);
+        .rotate([0, 0, 1], deg2rad(deg*3))
+        .scale(1, -1, 1)
+        .translate(5.5, 5.5, 0)
+        .project(50, 640, 480, 640, 480);
 
     for (const face of teapot.faces) {
-        const a = new Vec4(face[0].array)
-        const b = new Vec4(face[1].array)
-        const c = new Vec4(face[2].array)
-        a.transform(transform);
-        b.transform(transform);
-        c.transform(transform);    
+        const verticies = [new Vec4(face[0].array), new Vec4(face[1].array), new Vec4(face[2].array)]
+        for (const vertex of verticies) {
+            vertex.transform(transform);
+        }
         
         ctx.beginPath();
-        ctx.moveTo(a.array[0], a.array[1]);
-        ctx.lineTo(b.array[0], b.array[1]);
-        ctx.lineTo(c.array[0], c.array[1]);
+        ctx.moveTo(verticies[0].array[0], verticies[0].array[1]);
+        ctx.lineTo(verticies[1].array[0], verticies[1].array[1]);
+        ctx.lineTo(verticies[2].array[0], verticies[2].array[1]);
         ctx.stroke();
     }
     
     deg += 1
-})
+}, 2000/60)

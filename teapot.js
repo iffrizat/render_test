@@ -13962,7 +13962,7 @@ for (let i = 0; i < data.length; i++) {
     const face = []; 
     for (const vertexString of faceData.split("\n")) {
         const values = vertexString.split(" "); 
-        face.push(new Vec4([Number.parseFloat(values[0]), Number.parseFloat(values[1]), Number.parseFloat(values[2]), 0]))
+        face.push(new Vec4([Number.parseFloat(values[0]), Number.parseFloat(values[1]), Number.parseFloat(values[2]), 1]))
     }
     
     teapot.faces.push(face);
