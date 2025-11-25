@@ -1,5 +1,6 @@
 import { Mat44, Vec4 } from "./math.js"
 import { teapot } from "./teapot.js";
+import { drawLine } from "./drawing.js";
 
 const ctx = document.querySelector("#canvas").getContext("2d");
 
@@ -26,11 +27,16 @@ setInterval(() => {
             vertex.transform(transform);
         }
         
-        ctx.beginPath();
-        ctx.moveTo(verticies[0].x, verticies[0].y);
-        ctx.lineTo(verticies[1].x, verticies[1].y);
-        ctx.lineTo(verticies[2].x, verticies[2].y);
-        ctx.stroke();
+       
+        // ctx.beginPath();
+        // ctx.moveTo(verticies[0].x, verticies[0].y);
+        // ctx.lineTo(verticies[1].x, verticies[1].y);
+        // ctx.lineTo(verticies[2].x, verticies[2].y);
+        // ctx.stroke();
+        
+        drawLine(ctx, verticies[0].x, verticies[0].y, verticies[1].x, verticies[1].y);
+        drawLine(ctx, verticies[0].x, verticies[0].y, verticies[2].x, verticies[2].y);
+        drawLine(ctx, verticies[1].x, verticies[1].y, verticies[2].x, verticies[2].y);
     }
     
     deg += 1;
