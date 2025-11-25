@@ -1,4 +1,4 @@
-import { Mat44, Vec4 } from "./matrix.js"
+import { Mat44, Vec4 } from "./math.js"
 import { teapot } from "./teapot.js";
 
 const ctx = document.querySelector("#canvas").getContext("2d");
@@ -12,19 +12,10 @@ let deg = 0;
 setInterval(() => {
     ctx.clearRect(0, 0, 640, 480);
 
-    /*
-    const model = Mat44.identity();
-
-    model.scale(1, 1, 1);
-    model.rotate([0, 1, 0], deg2rad(deg));
-    model.translate(100, 0, 0);
-    
-    const transform = Mat44.identity().project(100, 640, 480, 640, 480);
-    transform.transform(model);
-    */
     const transform = Mat44.identity()
-        .rotate([0, 1, 0], deg2rad(deg))
-        .rotate([0, 0, 1], deg2rad(deg*3))
+        .rotate([0, 0, 1], deg2rad(20))
+        .rotate([1, 0, 0], deg2rad(20))
+        .rotate([0, 1, 0], deg2rad(deg*3))
         .scale(1, -1, 1)
         .translate(5.5, 5.5, 0)
         .project(50, 640, 480, 640, 480);
@@ -36,11 +27,11 @@ setInterval(() => {
         }
         
         ctx.beginPath();
-        ctx.moveTo(verticies[0].array[0], verticies[0].array[1]);
-        ctx.lineTo(verticies[1].array[0], verticies[1].array[1]);
-        ctx.lineTo(verticies[2].array[0], verticies[2].array[1]);
+        ctx.moveTo(verticies[0].x, verticies[0].y);
+        ctx.lineTo(verticies[1].x, verticies[1].y);
+        ctx.lineTo(verticies[2].x, verticies[2].y);
         ctx.stroke();
     }
     
-    deg += 1
-}, 2000/60)
+    deg += 1;
+}, 1000/10)

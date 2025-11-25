@@ -1,4 +1,5 @@
-import { Vec4 } from "./matrix.js"
+import { Vec4 } from "./math.js"
+
 const data = 
 `0.000000 2.250000 1.500000
 0.168000 2.250000 1.500000
