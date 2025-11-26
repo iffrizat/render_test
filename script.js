@@ -20,6 +20,8 @@ setInterval(() => {
         .scale(1, -1, 1)
         .translate(5.5, 5.5, 0)
         .project(50, 640, 480, 640, 480);
+    
+    const id = ctx.createImageData(640, 480);
 
     for (const face of teapot.faces) {
         const verticies = [new Vec4(face[0].array), new Vec4(face[1].array), new Vec4(face[2].array)]
@@ -27,17 +29,11 @@ setInterval(() => {
             vertex.transform(transform);
         }
         
-       
-        // ctx.beginPath();
-        // ctx.moveTo(verticies[0].x, verticies[0].y);
-        // ctx.lineTo(verticies[1].x, verticies[1].y);
-        // ctx.lineTo(verticies[2].x, verticies[2].y);
-        // ctx.stroke();
-        
-        drawLine(ctx, verticies[0].x, verticies[0].y, verticies[1].x, verticies[1].y);
-        drawLine(ctx, verticies[0].x, verticies[0].y, verticies[2].x, verticies[2].y);
-        drawLine(ctx, verticies[1].x, verticies[1].y, verticies[2].x, verticies[2].y);
+        drawLine(id, verticies[0].x, verticies[0].y, verticies[1].x, verticies[1].y, 0xff0000);
+        drawLine(id, verticies[0].x, verticies[0].y, verticies[2].x, verticies[2].y, 0xff0000);
+        drawLine(id, verticies[1].x, verticies[1].y, verticies[2].x, verticies[2].y, 0xff0000);
     }
-    
+
+    ctx.putImageData(id, 0, 0);
     deg += 1;
 }, 1000/10)
