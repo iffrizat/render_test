@@ -21,8 +21,11 @@ function drawLine(id, x0, y0, x1, y1, color) {
 
 function drawPixel(id, x, y, color) {
     const data = id.data;
+    
+    if (x < 0 || x > id.width-1) return;
+    if (y < 0 || y > id.height-1) return;
+
     const index = 4*(Math.ceil(y) * id.width + Math.ceil(x));
-    if (index > 4*id.height*id.width-1 || index < 0) return;
     data[index + 0] =  (color >> 16) & 0xff; // red
     data[index + 1] =  (color >> 8) & 0xff ; // green 
     data[index + 2] =  (color >> 0) & 0xff; // blue
