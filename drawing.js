@@ -1,19 +1,56 @@
 import { lerp } from "./math.js";
 
-function drawLine(id, x0, y0, x1, y1, color) {
-    const dx = x1 - x0;
-    const dy = y1 - y0;    
+function color(r, g, b) {
+    return b + (g << 8) + (r << 16)
+}
+
+function drawTriangleFilled(id, p0, p1, p2, color) {
+    // p2 is the top point, p0 is the bottom point
+    if (p1.y < p0.y) [p1, p0] = [p0, p1];
+    if (p2.y < p0.y) [p2, p0] = [p0, p2];
+    if (p2.y < p1.y) [p2, p1] = [p1, p2];
+    
+    // draw the top half
+    for (let y = p2.y; y > p1.y; y--) {
+        let left = lerp(p2.y, p2.x, p0.y, p0.x, y);
+        let right = lerp(p2.y, p2.x, p1.y, p1.x, y);
+        if (left > right) [left, right] = [right, left];
+        for (let x = left; x < right; x++) {
+            drawPixel(id, x, y, color);
+        }
+    }
+
+    // draw the bottom half
+    for (let y = p1.y; y > p0.y; y--) {
+        let left = lerp(p2.y, p2.x, p0.y, p0.x, y);
+        let right = lerp(p1.y, p1.x, p0.y, p0.x, y);
+        if (left > right) [left, right] = [right, left];
+        for (let x = left; x < right; x++) {
+            drawPixel(id, x, y, color);
+        }
+    }
+}
+
+function drawTriangleWireframe(id, p0, p1, p2, color) {
+    drawLine(id, p0, p1, color);
+    drawLine(id, p0, p2, color);
+    drawLine(id, p1, p2, color);
+}
+
+function drawLine(id, p0, p1, color) {
+    const dx = p1.x - p0.x;
+    const dy = p1.y - p0.y;    
     
     // Horizontal line
     if (dx > dy) {
-        for (let x = x0; x < x1; x++) {
-            const y = lerp(x0, y0, x1, y1, x);
+        for (let x = p0.x; x < p1.x; x++) {
+            const y = lerp(p0.x, p0.y, p1.x, p1.y, x);
             drawPixel(id, x, y, color);
         }
     // Vertical line
     } else {
-        for (let y = y0; y < y1; y++) {
-            const x = lerp(y0, x0, y1, x1, y);
+        for (let y = p0.y; y < p1.y; y++) {
+            const x = lerp(p0.y, p0.x, p1.y, p1.x, y);
             drawPixel(id, x, y, color);
         }
     }
@@ -32,4 +69,4 @@ function drawPixel(id, x, y, color) {
     data[index + 3] =  255; // alpha 
 }
 
-export { drawLine, drawPixel }
+export { drawLine, drawPixel, drawTriangleWireframe, drawTriangleFilled, color }

@@ -10,5 +10,6 @@ Becase the web has this nice canvas API, that abstracts the drawing away nicely,
 - ~~Transformation pipeline (model -> world -> camera -> viewport -> projection)~~
 - ~~Load in a model (start with simple .objs or maybe something even simpler)~~ 
 - ~~Render a model in wireframe~~
+- ~~Filled trinagles on the model~~
 - Hidden-surface determination (with a Z-buffer probably)
 - Textures & lighting

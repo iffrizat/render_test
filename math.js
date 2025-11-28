@@ -2,6 +2,10 @@ function lerp(i0, d0, i1, d1, t) {
     return d0 + (d1 - d0) * (t - i0) / (i1 - i0);
 }
 
+function deg2rad(deg) {
+    return deg * (Math.PI/180);
+}
+
 class Mat44 {
     constructor(array) {
         /*
@@ -130,4 +134,4 @@ class Vec4 {
     }
 }
 
-export { Mat44, Vec4, lerp }
+export { Mat44, Vec4, lerp, deg2rad }

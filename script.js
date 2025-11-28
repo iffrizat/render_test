@@ -1,14 +1,18 @@
-import { Mat44, Vec4 } from "./math.js"
+import { Mat44, Vec4, deg2rad } from "./math.js"
 import { teapot } from "./teapot.js";
-import { drawLine } from "./drawing.js";
+import { color, drawTriangleFilled } from "./drawing.js";
 
 const ctx = document.querySelector("#canvas").getContext("2d");
 
-function deg2rad(deg) {
-    return deg * (Math.PI/180);
-}
-
 let deg = 0;
+
+function colorHash(p0, p1, p2) {
+    return color(
+        (p0.x + p0.y + p0.z) % 255,
+        (p1.x + p1.y + p1.z) % 255,
+        (p2.x + p2.y + p2.z) % 255
+    );
+}
 
 setInterval(() => {
     ctx.clearRect(0, 0, 640, 480);
@@ -17,8 +21,8 @@ setInterval(() => {
         .rotate([0, 0, 1], deg2rad(20))
         .rotate([1, 0, 0], deg2rad(20))
         .rotate([0, 1, 0], deg2rad(deg*3))
-        .scale(1, -1, 1)
-        .translate(5.5, 5.5, 0)
+        .scale(1.5, -1.5, 1.5)
+        .translate(6, 6, 0)
         .project(50, 640, 480, 640, 480);
     
     const id = ctx.createImageData(640, 480);
@@ -29,9 +33,7 @@ setInterval(() => {
             vertex.transform(transform);
         }
         
-        drawLine(id, verticies[0].x, verticies[0].y, verticies[1].x, verticies[1].y, 0xff0000);
-        drawLine(id, verticies[0].x, verticies[0].y, verticies[2].x, verticies[2].y, 0xff0000);
-        drawLine(id, verticies[1].x, verticies[1].y, verticies[2].x, verticies[2].y, 0xff0000);
+        drawTriangleFilled(id, verticies[0], verticies[1], verticies[2], colorHash(verticies[0], verticies[1], verticies[2]));
     }
 
     ctx.putImageData(id, 0, 0);
